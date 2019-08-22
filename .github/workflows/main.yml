@@ -3,19 +3,19 @@ name: Build and publish
 on: [push]
 
 jobs:
-
   build:
- 
     runs-on: ubuntu-latest
- 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-    - run: npm install -g yarn
-    - run: yarn install
-    - run: yarn run build
-    - name: Build Docker image
-      run: docker build . --tag eslint-action:$(date +%s)
+      - uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - run: npm install -g yarn
+      - run: yarn install
+      - name: Build JavaScript
+        run: yarn run build
+      - name: Build Docker image
+        run: docker build . --tag docker.pkg.github.com/minna-technologies/eslint:$(date +%s)
+      - name: Publish Docker image
+        run: docker push docker.pkg.github.com/minna-technologies/eslint:$(date +%s)
