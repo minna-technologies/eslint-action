@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ChecksUpdateParamsOutput } from "@octokit/rest";
+import Octokit, {ChecksUpdateParamsOutput, ChecksUpdateParamsOutputAnnotations} from "@octokit/rest";
 import {Context} from "@actions/github/lib/context";
-import Octokit from "@octokit/rest";
+import {chunk} from 'lodash';
 
 const context = new Context();
 
@@ -23,13 +23,28 @@ export async function createCheck(octokit: Octokit, checkName: string): Promise<
 }
 
 export async function updateCheck(octokit: Octokit, checkRunId: number, output: ChecksUpdateParamsOutput, conclusion: "success" | "failure"): Promise<void> {
-  await octokit.checks.update({
-    owner: context.repo.owner,
-    repo: context.repo.repo,
-    status: "completed",
-    completed_at: new Date().toISOString(),
-    output,
-    check_run_id: checkRunId,
-    conclusion
-  });
+  const MAX_ANNOTATIONS = 50;
+  const annotationChunks = chunk(output.annotations, MAX_ANNOTATIONS);
+
+  async function send(annotations: ChecksUpdateParamsOutputAnnotations[])  {
+    return octokit.checks.update({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      status: "completed",
+      completed_at: new Date().toISOString(),
+      output: {...output, annotations},
+      check_run_id: checkRunId,
+      conclusion
+    });
+  }
+
+  if (annotationChunks.length == 0) {
+    await send([]);
+  } else {
+    for (let i = 0; i < annotationChunks.length; i++) {
+      const annotationChunk = annotationChunks[i];
+
+      await send(annotationChunk);
+    }
+  }
 }
