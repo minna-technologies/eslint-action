@@ -36,6 +36,7 @@ async function run() {
 
     const outputMessage = `${lintReport.errorCount} error(s), ${lintReport.warningCount} warning(s) found.`;
     const output: ChecksUpdateParamsOutput = {
+      title: "ESLint result",
       summary: outputMessage,
       annotations
     };
@@ -45,7 +46,7 @@ async function run() {
 
     await updateCheck(octokit, checkId, output, conclusion);
   } catch (error) {
-    await updateCheck(octokit, checkId, {summary: "Check failed to run."}, "failure");
+    await updateCheck(octokit, checkId, {title: "Failure", summary: "Check failed to run."}, "failure");
     throw error;
   }
 }
