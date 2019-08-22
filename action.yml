@@ -1,0 +1,19 @@
+name: 'ESLint check'
+description: 'Run ESLint and output lint errors as a GitHub check'
+author: 'Minna Technologies'
+inputs:
+  github-token:
+    description: 'Token for the repo. Can be passed in using {{ secrets.GITHUB_TOKEN }}.'
+    required: true
+  install-command:
+    description: 'Command to run to install packages.'
+    default: 'npm'
+  file-patterns:
+    description: 'File patterns to include in linting.'
+    default: 'src/**'
+  file-extensions:
+    description: 'Filters files based on file extension for linting.'
+    default: '.js,.jsx,.ts,.tsx'
+runs:
+  using: 'node12'
+  main: 'lib/main.js'
