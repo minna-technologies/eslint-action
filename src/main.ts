@@ -19,9 +19,11 @@ const checkName = "ESLint check";
 const octokit = createOctokit(githubToken);
 
 async function run() {
-  const installOutput = spawnSync(installCommand);
-  if (installOutput.status != 0) {
-    core.setFailed(`Failed to run install command: ${installCommand}`);
+  if (installCommand) {
+    const installOutput = spawnSync(installCommand);
+    if (installOutput.status != 0) {
+      core.setFailed(`Failed to run install command: ${installCommand}`);
+    }
   }
 
   const checkId = await createCheck(octokit, checkName);
