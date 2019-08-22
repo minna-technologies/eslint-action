@@ -16,7 +16,7 @@ export async function createCheck(octokit: Octokit, checkName: string): Promise<
     repo: context.repo.repo,
     head_sha: context.sha,
     status: "in_progress",
-    started_at: new Date().toString()
+    started_at: new Date().toISOString()
   });
 
   return id;
@@ -27,7 +27,7 @@ export async function updateCheck(octokit: Octokit, checkRunId: number, output: 
     owner: context.repo.owner,
     repo: context.repo.repo,
     status: "completed",
-    completed_at: new Date().toString(),
+    completed_at: new Date().toISOString(),
     output,
     check_run_id: checkRunId,
     conclusion
