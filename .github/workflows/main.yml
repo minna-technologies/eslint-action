@@ -18,6 +18,6 @@ jobs:
       - name: Build JavaScript
         run: yarn run build
       - name: Build Docker image
-        run: docker build . --tag docker.pkg.github.com/minna-technologies/eslint:$(date +%s)
+        run: docker build . --tag docker.pkg.github.com/minna-technologies/eslint:master
       - name: Publish Docker image
-        run: docker push docker.pkg.github.com/minna-technologies/eslint:$(date +%s)
+        run: docker push docker.pkg.github.com/minna-technologies/eslint:master
