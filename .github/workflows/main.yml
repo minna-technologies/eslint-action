@@ -11,8 +11,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - run: npm install -g yarn
-      - run: yarn install
+      - name: Install packages
+        run: |
+          npm install -g yarn
+          yarn install
       - name: Build JavaScript
         run: yarn run build
       - name: Build Docker image
