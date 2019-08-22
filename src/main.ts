@@ -23,25 +23,31 @@ async function run() {
     const installOutput = spawnSync(installCommand);
     if (installOutput.status != 0) {
       core.setFailed(`Failed to run install command: ${installCommand}`);
+      process.exit(1);
     }
   }
 
   const checkId = await createCheck(octokit, checkName);
 
-  const lintReport = runLintCheck(fileExtensions, filePatterns.split(","));
+  try {
+    const lintReport = runLintCheck(fileExtensions, filePatterns.split(","));
 
-  const annotations = flatMap(lintReport.results.filter(result => result.messages.length > 0), lintResult => convertLintResultToAnnotation(lintResult, workspacePath));
+    const annotations = flatMap(lintReport.results.filter(result => result.messages.length > 0), lintResult => convertLintResultToAnnotation(lintResult, workspacePath));
 
-  const outputMessage = `${lintReport.errorCount} error(s), ${lintReport.warningCount} warning(s) found.`;
-  const output: ChecksUpdateParamsOutput = {
-    summary: outputMessage,
-    annotations
-  };
-  console.info(outputMessage);
+    const outputMessage = `${lintReport.errorCount} error(s), ${lintReport.warningCount} warning(s) found.`;
+    const output: ChecksUpdateParamsOutput = {
+      summary: outputMessage,
+      annotations
+    };
+    console.info(outputMessage);
 
-  const conclusion = lintReport.errorCount > 0 ? "success" : "failure";
+    const conclusion = lintReport.errorCount > 0 ? "success" : "failure";
 
-  await updateCheck(octokit, checkId, output, conclusion);
+    await updateCheck(octokit, checkId, output, conclusion);
+  } catch (error) {
+    await updateCheck(octokit, checkId, {summary: "Check failed to run."}, "failure");
+    throw error;
+  }
 }
 
 run().catch(error => {
