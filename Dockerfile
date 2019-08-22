@@ -7,6 +7,7 @@ RUN npm run build
 FROM node:10-alpine AS output
 WORKDIR /action
 CMD entrypoint.sh
-COPY --from=builder ./app/entrypoint.sh ./build/dist ./
+COPY entrypoint.sh ./
+COPY --from=builder ./build/dist ./
 COPY package.json ./
 RUN npm install --production
