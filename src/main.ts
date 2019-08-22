@@ -42,7 +42,7 @@ async function run() {
     };
     console.info(outputMessage);
 
-    const conclusion = lintReport.errorCount > 0 ? "success" : "failure";
+    const conclusion = lintReport.errorCount > 0 ? "failure" : "success";
 
     await updateCheck(octokit, checkId, output, conclusion);
   } catch (error) {
