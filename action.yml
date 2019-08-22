@@ -15,5 +15,5 @@ inputs:
     description: 'Filters files based on file extension for linting.'
     default: '.js,.jsx,.ts,.tsx'
 runs:
-  using: 'node12'
-  main: 'lib/main.js'
+  using: 'docker'
+  image: 'Dockerfile'
