@@ -20,7 +20,7 @@ const octokit = createOctokit(githubToken);
 
 async function run() {
   if (installCommand) {
-    const installOutput = spawnSync(installCommand);
+    const installOutput = spawnSync(installCommand, { stdio: "inherit", shell: true });
     if (installOutput.status != 0) {
       core.setFailed(`Failed to run install command: ${installCommand}`);
       process.exit(1);
